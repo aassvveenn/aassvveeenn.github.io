@@ -104,9 +104,14 @@ Toute modification du style se fait dans `interferences.css` uniquement.
 | Titre d'entrée | `.entry-title` | DM Mono | Titres des entrées journal et sections |
 
 Albums : `<em>Titre</em>`
+
 Morceaux : entre guillemets dans le texte, sans balise spécifique.
+
 Formulations de l'auteur : dans le texte, sans guillemets ajoutés par le HTML.
+
 Observations : dans le texte, sans tiret long ajouté par le HTML.
+
+Spécificité de `transmissions.html` : voix principale en `<p class="observation">`, citations de l'auteur en `<p class="author-voice"><em>« ... »</em></p>` (paragraphe seul) ou `<em>« ... »</em>` intégré dans un `<p class="observation">`.
 
 ---
 
