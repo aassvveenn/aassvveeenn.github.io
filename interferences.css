@@ -1,12 +1,9 @@
 /* ============================================================
-   INTERFÉRENCES — feuille de style externe mise à jour
-   Typographie : Syne 800 / Literata / Space Mono
+   INTERFÉRENCES — Version Stabilisée
+   Logo : Syne 800 | Corps : Literata | Machine : Space Mono
    ============================================================ */
 
-/* Mise à jour de l'import : ajout de Literata avec Optical Size et Space Mono */
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=Space+Mono:ital,wght@0,400;0,700&display=swap');
-
-/* ── Variables ─────────────────────────────────────────────── */
 
 :root {
   --bg:           #f2efe8;
@@ -17,9 +14,10 @@
   --band-bg:      #3a4a3d;
   --band-text:    #c8d4c4;
 
-  --font-title:   'Syne', 'Arial Black', sans-serif;
-  --font-body:    'Literata', Georgia, serif; /* Basculement sur Literata */
-  --font-mono:    'Space Mono', monospace;    /* Basculement sur Space Mono */
+  /* Restauration des rôles typographiques */
+  --font-logo:    'Syne', sans-serif;
+  --font-body:    'Literata', serif;
+  --font-mono:    'Space Mono', monospace;
 }
 
 /* ── Base ──────────────────────────────────────────────────── */
@@ -33,78 +31,93 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-body);
-  font-optical-sizing: auto; /* Active l'adaptation automatique des traits fins */
-  line-height: 1.65; /* Ajusté pour Literata */
+  font-optical-sizing: auto;
+  line-height: 1.65;
   max-width: 740px;
   margin: 0 auto;
   padding: 3.5rem 2rem 6rem;
 }
 
-/* ── Corps de texte & Voix ─────────────────────────────────── */
+/* ── En-tête (Le LOGO en Syne) ─────────────────────────────── */
 
-p {
-  margin-bottom: 1.2rem;
-  font-size: 1rem;
-}
-
-/* Ta Voix (Literata) */
-.author-voice {
-  font-family: var(--font-body);
-  font-size: 1.05rem; /* Un peu plus grand pour l'élégance */
-  line-height: 1.65;
-  letter-spacing: -0.01em; /* Densifie le gris typographique */
+header h1 {
+  font-family: var(--font-logo); /* Retour au Syne 800 */
+  font-weight: 800;
+  font-size: clamp(1.8rem, 8vw, 3.4rem);
+  letter-spacing: -0.04em; /* Plus serré pour l'effet logo */
+  line-height: 0.95;
   color: var(--ink);
+  margin-bottom: 0.5rem;
+  text-transform: none; 
 }
-
-/* La Voix de l'IA / Observations (Space Mono) */
-.observation {
-  font-family: var(--font-mono);
-  font-size: 0.88rem; /* Plus petite car la Space Mono est très large */
-  line-height: 1.55;
-  letter-spacing: -0.025em; /* Crucial pour équilibrer la densité avec Literata */
-  color: var(--muted);
-  opacity: 0.95;
-}
-
-/* ── Autres adaptations cohérentes ────────────────────────── */
 
 header .subtitle {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: var(--muted);
-  letter-spacing: 0.05em; /* Réduit car Space Mono est déjà espacée */
-  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-summary h2 {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 700; /* Space Mono n'a pas de 500, on utilise 700 */
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--band-text);
-  background: var(--band-bg);
-  padding: 0.35rem 0.75rem 0.3rem;
-  border-radius: 2px;
-}
+/* ── Titres d'entrées (Agrandis) ────────────────────────────── */
 
 .entry-title {
   font-family: var(--font-mono);
-  font-size: 0.85rem; /* Ajusté pour la largeur de la Space Mono */
+  font-size: 1.1rem; /* Agrandi pour dépasser le corps de texte (1rem) */
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   color: var(--ink);
-  line-height: 1.4;
+  line-height: 1.2;
+}
+
+.entry-date {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+/* ── Corps de texte & Densité ──────────────────────────────── */
+
+/* Ta voix */
+.author-voice {
+  font-family: var(--font-body);
+  font-size: 1.05rem; 
+  line-height: 1.65;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.2rem;
+}
+
+/* Voix IA (Space Mono resserrée pour la densité) */
+.observation {
+  font-family: var(--font-mono);
+  font-size: 0.85rem; 
+  line-height: 1.5; /* Plus compact pour égaliser le gris */
+  letter-spacing: -0.03em; /* Évite l'effet éparpillé */
+  word-spacing: -0.05em;
+  color: var(--muted);
+}
+
+/* ── Éléments de structure ─────────────────────────────────── */
+
+summary h2 {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background: var(--band-bg);
+  color: var(--band-text);
+  padding: 0.3rem 0.6rem;
+  border-radius: 2px;
 }
 
 blockquote {
   font-family: var(--font-body);
   font-style: italic;
   font-size: 1.05rem;
-  color: var(--ink);
   border-left: 3px solid var(--accent);
-  padding: 0.5rem 0 0.5rem 1.5rem;
-  margin: 1.5rem 0;
+  padding-left: 1.5rem;
+  margin: 1.8rem 0;
 }
 
-/* On garde le reste identique (Reset, Liens, Responsive) */
+/* Reset des marges p */
+p { margin-bottom: 1rem; }
