@@ -90,21 +90,19 @@ details > summary h2 {
   border-radius: 2px;
 }
 
-/* Symbole de toggle unifié (flèche CSS) */
+/* Texte + symbole de toggle pour sections principales */
 details > summary::after {
-  content: '';
-  display: block;
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 6px solid var(--muted);
+  content: 'ouvrir →';
+  font-family: var(--font-sans);
+  font-size: 0.6rem;
+  color: var(--muted);
   margin-left: auto;
+  white-space: nowrap;
   transition: transform 0.2s ease;
 }
 
 details[open] > summary::after {
-  transform: rotate(180deg);
+  content: 'réduire ↓';
 }
 
 /* ── Liste des Entrées Journal ──────────────────────────────── */
@@ -153,24 +151,17 @@ details[open] > summary::after {
   font-size: 0.6rem;
   color: var(--muted);
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
-/* Symbole de toggle pour les entrées */
-.entry-toggle::after {
-  content: '';
-  display: inline-block;
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 6px solid var(--muted);
-  margin-left: 0.5rem;
-  transition: transform 0.2s ease;
-  vertical-align: middle;
+/* Symbole flèche collé au texte */
+.toggle-hint::after {
+  content: ' →';
+  display: inline;
 }
 
-.entry-toggle.open::after {
-  transform: rotate(180deg);
+.entry-toggle.open .toggle-hint::after {
+  content: ' ↓';
 }
 
 /* Sticky condensé au scroll */
@@ -220,7 +211,7 @@ p { margin-bottom: 1.2rem; }
 
 .author-voice {
   font-family: var(--font-body);
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   line-height: 1.65;
   letter-spacing: -0.01em;
   color: var(--ink);
@@ -228,7 +219,7 @@ p { margin-bottom: 1.2rem; }
 
 .observation {
   font-family: var(--font-sans);
-  font-size: 0.83rem;
+  font-size: 0.9rem;
   line-height: 1.5;
   letter-spacing: -0.03em;
   word-spacing: -0.05em;
@@ -244,7 +235,7 @@ p { margin-bottom: 1.2rem; }
 blockquote {
   font-family: var(--font-body);
   font-style: italic;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   border-left: 3px solid var(--accent);
   padding-left: 1.5rem;
   margin: 1.8rem 0;
