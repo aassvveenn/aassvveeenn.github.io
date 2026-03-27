@@ -194,6 +194,17 @@
           return;
         }
 
+        // Fermer toutes les autres entrées avant d'ouvrir celle-ci
+        document.querySelectorAll('.entry-toggle').forEach(otherToggle => {
+          if (otherToggle !== toggle) {
+            const otherContent = otherToggle.nextElementSibling;
+            const otherHint = otherToggle.querySelector('.toggle-hint');
+            otherContent.classList.remove('open');
+            otherToggle.classList.remove('open');
+            if (otherHint) otherHint.textContent = 'ouvrir';
+          }
+        });
+
         // Ouvrir
         content.classList.add('open');
         toggle.classList.add('open');
@@ -225,20 +236,32 @@
       });
     });
 
-    // ── Sticky au scroll ──
+    // ── Sticky au scroll (entrées + sections principales) ──
     let ticking = false;
 
     function updateStickyStates() {
+      // Sticky pour les entrées journal ouvertes
       document.querySelectorAll('.entry-toggle.open').forEach(toggle => {
         const rect = toggle.getBoundingClientRect();
         
-        // Si le haut du toggle est au-dessus du viewport (scrollé hors de vue)
         if (rect.top <= 0) {
           toggle.classList.add('sticky');
         } else {
           toggle.classList.remove('sticky');
         }
       });
+
+      // Sticky pour les sections principales ouvertes
+      document.querySelectorAll('details[open] > summary').forEach(summary => {
+        const rect = summary.getBoundingClientRect();
+        
+        if (rect.top <= 0) {
+          summary.classList.add('sticky');
+        } else {
+          summary.classList.remove('sticky');
+        }
+      });
+
       ticking = false;
     }
 
@@ -251,9 +274,14 @@
 
     // Vérifier aussi au toggle d'une entrée
     document.querySelectorAll('.entry-toggle').forEach(toggle => {
-      const originalClickHandler = toggle.onclick;
       toggle.addEventListener('click', () => {
-        // Petit délai pour laisser l'animation d'ouverture se faire
+        setTimeout(updateStickyStates, 50);
+      });
+    });
+
+    // Vérifier aussi au toggle des sections principales
+    document.querySelectorAll('details').forEach(details => {
+      details.addEventListener('toggle', () => {
         setTimeout(updateStickyStates, 50);
       });
     });
