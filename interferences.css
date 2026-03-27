@@ -13,7 +13,7 @@
   --muted:        #6b6860;
   --band-bg:      #3a4a3d;
   --band-text:    #c8d4c4;
-  --obs-bg:       #f9f7f2;
+  --obs-bg:       #faf8f4;
 
   --font-logo:    'Syne', sans-serif;
   --font-body:    'Literata', serif;
@@ -211,7 +211,7 @@ p { margin-bottom: 1.2rem; }
 
 .author-voice {
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 0.93rem;
   line-height: 1.65;
   letter-spacing: -0.01em;
   color: var(--ink);
@@ -219,13 +219,13 @@ p { margin-bottom: 1.2rem; }
 
 .observation {
   font-family: var(--font-sans);
-  font-size: 0.9rem;
+  font-size: 0.93rem;
   line-height: 1.5;
   letter-spacing: -0.03em;
   word-spacing: -0.05em;
   color: var(--muted);
   background: var(--obs-bg);
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0;
   margin: 1.8rem 0;
   border-radius: 2px;
 }
@@ -235,7 +235,7 @@ p { margin-bottom: 1.2rem; }
 blockquote {
   font-family: var(--font-body);
   font-style: italic;
-  font-size: 0.95rem;
+  font-size: 0.93rem;
   border-left: 3px solid var(--accent);
   padding-left: 1.5rem;
   margin: 1.8rem 0;
