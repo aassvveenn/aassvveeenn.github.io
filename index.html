@@ -187,9 +187,9 @@
         const isOpen = content.classList.contains('open');
 
         if (isOpen) {
-          // Fermer
+          // Fermer : nettoyage complet
           content.classList.remove('open');
-          toggle.classList.remove('open');
+          toggle.classList.remove('open', 'sticky');
           hint.textContent = 'ouvrir';
           return;
         }
@@ -200,7 +200,7 @@
             const otherContent = otherToggle.nextElementSibling;
             const otherHint = otherToggle.querySelector('.toggle-hint');
             otherContent.classList.remove('open');
-            otherToggle.classList.remove('open');
+            otherToggle.classList.remove('open', 'sticky');
             if (otherHint) otherHint.textContent = 'ouvrir';
           }
         });
@@ -236,11 +236,10 @@
       });
     });
 
-    // ── Sticky au scroll (entrées + sections principales) ──
+    // ── Sticky au scroll (entrées journal uniquement) ──
     let ticking = false;
 
     function updateStickyStates() {
-      // Sticky pour les entrées journal ouvertes
       document.querySelectorAll('.entry-toggle.open').forEach(toggle => {
         const rect = toggle.getBoundingClientRect();
         
@@ -250,18 +249,6 @@
           toggle.classList.remove('sticky');
         }
       });
-
-      // Sticky pour les sections principales ouvertes
-      document.querySelectorAll('details[open] > summary').forEach(summary => {
-        const rect = summary.getBoundingClientRect();
-        
-        if (rect.top <= 0) {
-          summary.classList.add('sticky');
-        } else {
-          summary.classList.remove('sticky');
-        }
-      });
-
       ticking = false;
     }
 
@@ -272,16 +259,9 @@
       }
     });
 
-    // Vérifier aussi au toggle d'une entrée
+    // Vérifier au toggle d'une entrée
     document.querySelectorAll('.entry-toggle').forEach(toggle => {
       toggle.addEventListener('click', () => {
-        setTimeout(updateStickyStates, 50);
-      });
-    });
-
-    // Vérifier aussi au toggle des sections principales
-    document.querySelectorAll('details').forEach(details => {
-      details.addEventListener('toggle', () => {
         setTimeout(updateStickyStates, 50);
       });
     });
