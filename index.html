@@ -226,24 +226,36 @@
     });
 
     // ── Sticky au scroll ──
-    const observerOptions = {
-      root: null,
-      threshold: 0,
-      rootMargin: '-10px 0px 0px 0px'
-    };
+    let ticking = false;
 
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting && entry.target.classList.contains('open')) {
-          entry.target.classList.add('sticky');
+    function updateStickyStates() {
+      document.querySelectorAll('.entry-toggle.open').forEach(toggle => {
+        const rect = toggle.getBoundingClientRect();
+        
+        // Si le haut du toggle est au-dessus du viewport (scrollé hors de vue)
+        if (rect.top <= 0) {
+          toggle.classList.add('sticky');
         } else {
-          entry.target.classList.remove('sticky');
+          toggle.classList.remove('sticky');
         }
       });
-    }, observerOptions);
+      ticking = false;
+    }
 
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateStickyStates);
+        ticking = true;
+      }
+    });
+
+    // Vérifier aussi au toggle d'une entrée
     document.querySelectorAll('.entry-toggle').forEach(toggle => {
-      observer.observe(toggle);
+      const originalClickHandler = toggle.onclick;
+      toggle.addEventListener('click', () => {
+        // Petit délai pour laisser l'animation d'ouverture se faire
+        setTimeout(updateStickyStates, 50);
+      });
     });
   </script>
 
