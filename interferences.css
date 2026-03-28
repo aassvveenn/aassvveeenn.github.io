@@ -62,7 +62,7 @@ header .subtitle {
 /* ── Sections ────────────────────────────────────────────── */
 
 .site-section { 
-  margin-top: 4rem; /* Plus d'espace entre les grandes parties */
+  margin-top: 4rem;
 }
 
 .site-section h2 {
@@ -73,16 +73,17 @@ header .subtitle {
   color: var(--band-text);
   padding: 0.3rem 0.6rem;
   border-radius: 2px;
-  display: inline-block; /* Pour que le fond vert ne prenne que la largeur du texte */
+  display: inline-block;
   margin-bottom: 1.5rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+
 /* ── STRUCTURE DES ENTRÉES (La Correction) ─────────────────── */
 
 .journal-entry {
-  position: relative; /* Définit le cadre de vie du sticky */
-  display: flow-root; /* Stabilise le scroll et les marges internes */
+  position: relative;
+  display: flow-root;
 }
 
 .entry-toggle {
@@ -90,7 +91,7 @@ header .subtitle {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--bg); /* Opaque pour masquer le texte défilant */
+  background: var(--bg);
   cursor: pointer;
   user-select: none;
   padding: 1.2rem 0 0.8rem;
@@ -98,19 +99,17 @@ header .subtitle {
   transition: box-shadow 0.2s ease;
 }
 
-/* Supprime la bordure double au sommet de la liste */
 .journal-entry:first-child .entry-toggle {
   border-top: none;
 }
 
-/* Ombre légère quand on ouvre pour décoller le titre du contenu */
 .entry-toggle.open {
-  background: var(--bg); /* Garde le fond crème pour la clarté */
-  box-shadow: 0 8px 15px rgba(30, 28, 24, 0.05); /* Ombre portée douce pour l'effet flottant */
-  border-left: 4px solid var(--band-bg); /* Le filet vert de gris à gauche */
-  padding-left: 1rem; /* On décale le texte pour laisser respirer le filet */
-  margin-left: -1rem; /* On compense pour que le titre reste aligné visuellement */
-  border-top-color: transparent; /* Optionnel : cache la bordure grise standard */
+  background: var(--bg);
+  box-shadow: 0 8px 15px rgba(30, 28, 24, 0.05);
+  border-left: 4px solid var(--band-bg);
+  padding-left: 1rem;
+  margin-left: -1rem;
+  border-top-color: transparent;
   transition: all 0.3s ease;
 }
 
@@ -140,7 +139,6 @@ header .subtitle {
   line-height: 1.35;
   letter-spacing: -0.01em;
   color: var(--ink);
-  /* Suppression de l'ellipsis pour laisser les titres longs respirer */
 }
 
 .toggle-hint {
@@ -154,7 +152,7 @@ header .subtitle {
 
 .entry-content {
   display: none;
-  padding: 1rem 0 4rem; /* Marges généreuses pour laisser scroller */
+  padding: 1rem 0 4rem;
 }
 
 .entry-content.open {
@@ -174,6 +172,13 @@ p { margin-bottom: 1.25rem; }
   padding: 1rem;
   margin: 2rem 0;
   border-radius: 2px;
+}
+
+.observation-plain {
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
 }
 
 blockquote {
