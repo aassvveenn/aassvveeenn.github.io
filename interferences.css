@@ -1,6 +1,6 @@
 /* ============================================================
-   INTERFÉRENCES — Version Master (Literata + Space Grotesk)
-   Cible : Équilibre des masses, Lisibilité, Brutalisme sobre
+   INTERFÉRENCES — Version Corrigée (Sticky Stacking)
+   Cible : Hiérarchie claire, Titres multi-lignes, Scroll fluide
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=Space+Grotesk:wght@400;500;700&display=swap');
@@ -40,7 +40,7 @@ body {
   padding: 3.5rem 2rem 6rem;
 }
 
-/* ── Logo (Syne) ────────────────────────────────────────────── */
+/* ── Logo ───────────────────────────────────────────────────── */
 
 header h1 {
   font-family: var(--font-logo);
@@ -49,8 +49,6 @@ header h1 {
   letter-spacing: -0.04em;
   line-height: 0.95;
   margin-bottom: 0.5rem;
-  white-space: nowrap;
-  overflow-wrap: normal;
 }
 
 header .subtitle {
@@ -61,11 +59,9 @@ header .subtitle {
   text-transform: uppercase;
 }
 
-/* ── Sections (Journal, Transmissions, etc.) ──────────────── */
+/* ── Sections (Details/Summary) ────────────────────────────── */
 
-details {
-  margin-top: 2.5rem;
-}
+details { margin-top: 2.5rem; }
 
 details > summary {
   cursor: pointer;
@@ -75,10 +71,6 @@ details > summary {
   align-items: center;
   gap: 0.75rem;
   padding: 0.5rem 0;
-}
-
-details > summary::-webkit-details-marker {
-  display: none;
 }
 
 details > summary h2 {
@@ -91,60 +83,62 @@ details > summary h2 {
   border-radius: 2px;
 }
 
-/* Texte + symbole de toggle pour sections principales */
 details > summary::after {
   content: 'ouvrir →';
   font-family: var(--font-sans);
   font-size: 0.6rem;
   color: var(--muted);
   margin-left: auto;
-  white-space: nowrap;
-  transition: transform 0.2s ease;
 }
 
-details[open] > summary::after {
-  content: 'réduire ↓';
-}
+details[open] > summary::after { content: 'réduire ↓'; }
 
-/* ── Liste des Entrées Journal ──────────────────────────────── */
+/* ── STRUCTURE DES ENTRÉES (La Correction) ─────────────────── */
+
+.journal-entry {
+  position: relative; /* Définit le cadre de vie du sticky */
+  display: flow-root; /* Stabilise le scroll et les marges internes */
+}
 
 .entry-toggle {
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--bg);
+  background: var(--bg); /* Opaque pour masquer le texte défilant */
   cursor: pointer;
   user-select: none;
-  padding: 1rem 0 0.5rem;
+  padding: 1.2rem 0 0.8rem;
   border-top: 1px solid var(--rule);
+  transition: box-shadow 0.2s ease;
 }
 
-.entry-toggle:first-child {
+/* Supprime la bordure double au sommet de la liste */
+.journal-entry:first-child .entry-toggle {
   border-top: none;
 }
 
-/* Quand sticky est actif (entrée ouverte et scrollée) */
+/* Ombre légère quand on ouvre pour décoller le titre du contenu */
 .entry-toggle.open {
-  border-bottom: 1px solid var(--rule);
-  box-shadow: 0 2px 8px rgba(30, 28, 24, 0.05);
+  box-shadow: 0 4px 12px rgba(30, 28, 24, 0.03);
 }
 
-/* Date en sur-titre flottant */
+/* ── Typographie des Entrées ──────────────────────────────── */
+
 .entry-date {
   display: block;
   font-family: var(--font-sans);
-  font-size: 0.5rem;
+  font-size: 0.55rem;
   color: var(--muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   margin-bottom: 0.4rem;
 }
 
-/* Grille 2 colonnes : titre / symbole */
 .entry-toggle-grid {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 1rem;
+  gap: 1.5rem;
   align-items: baseline;
 }
 
@@ -152,149 +146,61 @@ details[open] > summary::after {
   font-family: var(--font-sans);
   font-size: 1.05rem;
   font-weight: 500;
-  line-height: 1.3;
-  letter-spacing: -0.02em;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
   color: var(--ink);
+  /* Suppression de l'ellipsis pour laisser les titres longs respirer */
 }
 
 .toggle-hint {
   font-family: var(--font-sans);
   font-size: 0.6rem;
   color: var(--muted);
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-/* Symbole flèche collé au texte */
-.toggle-hint::after {
-  content: ' →';
-  display: inline;
-}
-
-.entry-toggle.open .toggle-hint::after {
-  content: ' ↓';
-}
-
-/* Sticky condensé au scroll */
-.entry-toggle.sticky {
-  position: sticky;
-  top: 0;
-  background: var(--bg);
-  z-index: 10;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--rule);
-  box-shadow: 0 2px 8px rgba(30, 28, 24, 0.05);
-}
-
-.entry-toggle.sticky .entry-title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: calc(100% - 30px);
-  font-size: 0.9rem;
-}
-
-.entry-toggle.sticky .entry-date {
-  display: none;
+  text-transform: lowercase;
 }
 
 /* ── Contenu des Entrées ────────────────────────────────────── */
 
 .entry-content {
   display: none;
-  padding: 1rem 0 2rem;
+  padding: 1rem 0 4rem; /* Marges généreuses pour laisser scroller */
 }
 
 .entry-content.open {
   display: block;
 }
 
-.entry-content .loading {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  color: var(--muted);
-  padding: 0.5rem 0;
-}
+/* ── Corps de Texte & Citations ────────────────────────────── */
 
-/* ── Corps de Texte (Voix Auteur vs IA) ────────────────────── */
-
-p { margin-bottom: 1.2rem; }
-
-.author-voice {
-  font-family: var(--font-body);
-  font-size: 0.93rem;
-  line-height: 1.65;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-}
+p { margin-bottom: 1.25rem; }
 
 .observation {
   font-family: var(--font-sans);
-  font-size: 0.93rem;
+  font-size: 0.9rem;
   line-height: 1.5;
-  letter-spacing: -0.03em;
-  word-spacing: -0.05em;
   color: var(--muted);
   background: var(--obs-bg);
-  padding: 0.5rem 0;
-  margin: 1.8rem 0;
+  padding: 1rem;
+  margin: 2rem 0;
   border-radius: 2px;
 }
 
-/* ── Citations & Éléments ──────────────────────────────────── */
-
 blockquote {
-  font-family: var(--font-body);
   font-style: italic;
-  font-size: 0.93rem;
   border-left: 3px solid var(--accent);
   padding-left: 1.5rem;
-  margin: 1.8rem 0;
-}
-
-em {
-  font-style: italic;
-}
-
-/* ── Liens de Section Transversale ─────────────────────────── */
-
-.section-links {
-  padding: 1.5rem 0 0.5rem;
-  font-family: var(--font-sans);
-  font-size: 0.78rem;
-  color: var(--muted);
-}
-
-.section-links a {
-  color: var(--ink);
-  text-decoration: none;
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 1px;
-}
-
-.section-links a:hover {
-  color: var(--accent);
-  border-color: var(--accent);
+  margin: 2rem 0;
 }
 
 /* ── Responsive ────────────────────────────────────────────── */
 
 @media (max-width: 600px) {
-  body { 
-    padding: 2rem 1.25rem; 
-  }
+  body { padding: 2rem 1.25rem; }
   
-  header h1 {
-    font-size: clamp(1.5rem, 8vw, 2.5rem);
-  }
+  header h1 { font-size: 2.2rem; }
   
   .entry-title {
     font-size: 0.95rem;
-  }
-}
-
-@media (max-width: 400px) {
-  header h1 {
-    letter-spacing: -0.06em;
+    line-height: 1.4;
   }
 }
