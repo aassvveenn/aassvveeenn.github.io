@@ -210,13 +210,13 @@
         if (isOpen) {
           content.classList.remove('open');
           toggle.classList.remove('open');
-          hint.textContent = 'ouvrir';
+          hint.textContent = 'ouvrir →';
           return;
         }
 
         content.classList.add('open');
         toggle.classList.add('open');
-        hint.textContent = 'réduire';
+        hint.textContent = 'réduire ↓';
 
         if (content._loaded) return;
         content._loaded = true;
