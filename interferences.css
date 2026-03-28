@@ -83,7 +83,7 @@ details > summary h2 {
   border-radius: 2px;
 }
 
-details > summary::after {
+/*details > summary::after {
   content: 'ouvrir →';
   font-family: var(--font-sans);
   font-size: 0.6rem;
@@ -91,7 +91,7 @@ details > summary::after {
   margin-left: auto;
 }
 
-details[open] > summary::after { content: 'réduire ↓'; }
+details[open] > summary::after { content: 'réduire ↓'; }*/
 
 /* ── STRUCTURE DES ENTRÉES (La Correction) ─────────────────── */
 
@@ -120,7 +120,13 @@ details[open] > summary::after { content: 'réduire ↓'; }
 
 /* Ombre légère quand on ouvre pour décoller le titre du contenu */
 .entry-toggle.open {
-  box-shadow: 0 4px 12px rgba(30, 28, 24, 0.03);
+  background: var(--bg); /* Garde le fond crème pour la clarté */
+  box-shadow: 0 8px 15px rgba(30, 28, 24, 0.05); /* Ombre portée douce pour l'effet flottant */
+  border-left: 4px solid var(--band-bg); /* Le filet vert de gris à gauche */
+  padding-left: 1rem; /* On décale le texte pour laisser respirer le filet */
+  margin-left: -1rem; /* On compense pour que le titre reste aligné visuellement */
+  border-top-color: transparent; /* Optionnel : cache la bordure grise standard */
+  transition: all 0.3s ease;
 }
 
 /* ── Typographie des Entrées ──────────────────────────────── */

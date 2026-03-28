@@ -195,6 +195,10 @@
       });
     });
 
+    document.querySelectorAll('.toggle-hint').forEach(hint => {
+      hint.textContent = 'ouvrir →';
+    });
+
     // ── Fetch et inject des entrées journal ──
     document.querySelectorAll('.entry-toggle').forEach(toggle => {
       // MODIFICATION : On cherche le contenu à l'intérieur du parent commun .journal-entry
