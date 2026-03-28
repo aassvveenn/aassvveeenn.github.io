@@ -45,11 +45,12 @@ body {
 header h1 {
   font-family: var(--font-logo);
   font-weight: 800;
-  font-size: clamp(1.5rem, 6vw, 3.4rem);
+  font-size: clamp(1.2rem, 5vw, 3.4rem);
   letter-spacing: -0.04em;
   line-height: 0.95;
   margin-bottom: 0.5rem;
-  word-break: break-word;
+  white-space: nowrap;
+  overflow-wrap: normal;
 }
 
 header .subtitle {
@@ -108,6 +109,10 @@ details[open] > summary::after {
 /* ── Liste des Entrées Journal ──────────────────────────────── */
 
 .entry-toggle {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
   cursor: pointer;
   user-select: none;
   padding: 1rem 0 0.5rem;
@@ -116,6 +121,12 @@ details[open] > summary::after {
 
 .entry-toggle:first-child {
   border-top: none;
+}
+
+/* Quand sticky est actif (entrée ouverte et scrollée) */
+.entry-toggle.open {
+  border-bottom: 1px solid var(--rule);
+  box-shadow: 0 2px 8px rgba(30, 28, 24, 0.05);
 }
 
 /* Date en sur-titre flottant */
@@ -279,5 +290,11 @@ em {
   
   .entry-title {
     font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 400px) {
+  header h1 {
+    letter-spacing: -0.06em;
   }
 }

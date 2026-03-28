@@ -187,23 +187,12 @@
         const isOpen = content.classList.contains('open');
 
         if (isOpen) {
-          // Fermer : nettoyage complet
+          // Fermer
           content.classList.remove('open');
-          toggle.classList.remove('open', 'sticky');
+          toggle.classList.remove('open');
           hint.textContent = 'ouvrir';
           return;
         }
-
-        // Fermer toutes les autres entrées avant d'ouvrir celle-ci
-        document.querySelectorAll('.entry-toggle').forEach(otherToggle => {
-          if (otherToggle !== toggle) {
-            const otherContent = otherToggle.nextElementSibling;
-            const otherHint = otherToggle.querySelector('.toggle-hint');
-            otherContent.classList.remove('open');
-            otherToggle.classList.remove('open', 'sticky');
-            if (otherHint) otherHint.textContent = 'ouvrir';
-          }
-        });
 
         // Ouvrir
         content.classList.add('open');
@@ -233,36 +222,6 @@
           .catch(() => {
             content.innerHTML = '<p class="observation">— Erreur de chargement.</p>';
           });
-      });
-    });
-
-    // ── Sticky au scroll (entrées journal uniquement) ──
-    let ticking = false;
-
-    function updateStickyStates() {
-      document.querySelectorAll('.entry-toggle.open').forEach(toggle => {
-        const rect = toggle.getBoundingClientRect();
-        
-        if (rect.top <= 0) {
-          toggle.classList.add('sticky');
-        } else {
-          toggle.classList.remove('sticky');
-        }
-      });
-      ticking = false;
-    }
-
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        window.requestAnimationFrame(updateStickyStates);
-        ticking = true;
-      }
-    });
-
-    // Vérifier au toggle d'une entrée
-    document.querySelectorAll('.entry-toggle').forEach(toggle => {
-      toggle.addEventListener('click', () => {
-        setTimeout(updateStickyStates, 50);
       });
     });
   </script>
