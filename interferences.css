@@ -59,21 +59,13 @@ header .subtitle {
   text-transform: uppercase;
 }
 
-/* ── Sections (Details/Summary) ────────────────────────────── */
+/* ── Sections ────────────────────────────────────────────── */
 
-details { margin-top: 2.5rem; }
-
-details > summary {
-  cursor: pointer;
-  user-select: none;
-  list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
+.site-section { 
+  margin-top: 4rem; /* Plus d'espace entre les grandes parties */
 }
 
-details > summary h2 {
+.site-section h2 {
   font-family: var(--font-sans);
   font-size: 0.68rem;
   font-weight: 700;
@@ -81,18 +73,11 @@ details > summary h2 {
   color: var(--band-text);
   padding: 0.3rem 0.6rem;
   border-radius: 2px;
+  display: inline-block; /* Pour que le fond vert ne prenne que la largeur du texte */
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
-
-/*details > summary::after {
-  content: 'ouvrir →';
-  font-family: var(--font-sans);
-  font-size: 0.6rem;
-  color: var(--muted);
-  margin-left: auto;
-}
-
-details[open] > summary::after { content: 'réduire ↓'; }*/
-
 /* ── STRUCTURE DES ENTRÉES (La Correction) ─────────────────── */
 
 .journal-entry {

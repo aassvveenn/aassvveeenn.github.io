@@ -13,13 +13,8 @@
     <p class="subtitle">Carnet musique &amp; écriture — Asven × claude.ai</p>
   </header>
 
-  <!-- ═══ JOURNAL ═══ -->
-
-  <details open>
-    <summary>
-      <h2>🎙️ Journal</h2>
-    </summary>
-
+  <section class="site-section" id="journal">
+    <h2>🎙️ Journal</h2>
     <div class="section-content" id="journal-list">
 
       <article class="journal-entry">
@@ -122,46 +117,28 @@
       </article>
 
     </div>
-  </details>
+  </section>
 
-  <!-- ═══ TRANSMISSIONS ═══ -->
-
-  <details>
-    <summary>
-      <h2>📡 Transmissions</h2>
-    </summary>
+  <section class="site-section" id="transmissions">
+    <h2>📡 Transmissions</h2>
     <div class="section-content" id="transmissions-content">
       <p class="loading">chargement…</p>
     </div>
-  </details>
+  </section>
 
-  <!-- ═══ PUBLICATIONS ═══ -->
-
-  <details>
-    <summary>
-      <h2>👓 Publications et exercices</h2>
-    </summary>
-    <div class="section-content" id="publications-content">
-      <p class="loading">chargement…</p>
-    </div>
-  </details>
-
-  <!-- ═══ EN ROTATION ═══ -->
-
-  <details>
-    <summary>
-      <h2>📻 En rotation</h2>
-    </summary>
+  <section class="site-section" id="rotations">
+    <h2>📻 En rotation</h2>
     <div class="section-content" id="rotations-content">
       <p class="loading">chargement…</p>
     </div>
-  </details>
+  </section>
 
   <script>
-    // ── Fetch et inject du contenu d'une section transversale ──
-    function loadSection(detailsEl, contentId, src) {
-      if (detailsEl._loaded) return;
-      detailsEl._loaded = true;
+    // 1. Fonction de chargement pour les sections fixes (immédiat)
+    function loadSection(contentId, src) {
+      const container = document.getElementById(contentId);
+      if (!container) return;
+
       fetch(src)
         .then(r => r.text())
         .then(html => {
@@ -169,44 +146,27 @@
           const doc = parser.parseFromString(html, 'text/html');
           const main = doc.querySelector('main') || doc.querySelector('section');
           if (main) {
-            document.getElementById(contentId).innerHTML = main.innerHTML;
+            container.innerHTML = main.innerHTML;
           }
         })
         .catch(() => {
-          document.getElementById(contentId).innerHTML =
-            '<p class="observation">— Erreur de chargement.</p>';
+          container.innerHTML = '<p class="observation">— Erreur de chargement.</p>';
         });
     }
 
-    // Sections transversales : chargées à l'ouverture du <details>
-    const sections = [
-      { id: 'transmissions', contentId: 'transmissions-content',
-        src: 'transmissions/transmissions.html' },
-      { id: 'publications',  contentId: 'publications-content',
-        src: 'publications/publications.html' },
-      { id: 'rotations',     contentId: 'rotations-content',
-        src: 'rotations/rotations.html' },
-    ];
+    // Lancer le chargement des sections dès maintenant
+    loadSection('transmissions-content', 'transmissions/transmissions.html');
+    loadSection('rotations-content', 'rotations/rotations.html');
 
-    sections.forEach(({ contentId, src }) => {
-      const details = document.getElementById(contentId).closest('details');
-      details.addEventListener('toggle', () => {
-        if (details.open) loadSection(details, contentId, src);
-      });
-    });
-
-    document.querySelectorAll('.toggle-hint').forEach(hint => {
-      hint.textContent = 'ouvrir →';
-    });
-
-    // ── Fetch et inject des entrées journal ──
+    // 2. Gestion des entrées du journal (cliquables)
     document.querySelectorAll('.entry-toggle').forEach(toggle => {
-      // MODIFICATION : On cherche le contenu à l'intérieur du parent commun .journal-entry
       const container = toggle.closest('.journal-entry');
       const content = container.querySelector('.entry-content');
-      
-      const src = toggle.dataset.src;
       const hint = toggle.querySelector('.toggle-hint');
+      const src = toggle.dataset.src;
+
+      // Initialisation de la flèche par défaut au chargement
+      hint.textContent = 'ouvrir →';
 
       toggle.addEventListener('click', () => {
         const isOpen = content.classList.contains('open');
