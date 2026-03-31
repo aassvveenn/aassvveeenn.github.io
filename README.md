@@ -112,14 +112,3 @@ Formulations de l'auteur : dans le texte, sans guillemets ajoutés par le HTML.
 Observations : dans le texte, sans tiret long ajouté par le HTML.
 
 Spécificité de `transmissions.html` : voix principale en `<p class="observation">`, citations de l'auteur en `<p class="author-voice"><em>« ... »</em></p>` (paragraphe seul) ou `<em>« ... »</em>` intégré dans un `<p class="observation">`.
-
----
-
-## Évolution vers Jekyll
-
-Le site est conçu pour une migration Jekyll sans perte. Quand le moment vient :
-- Les fichiers HTML deviennent des fichiers Markdown + front matter
-- `interferences.css` reste inchangé
-- `index.html` devient un layout Liquid généré automatiquement
-
-Rien à réécrire, juste à restructurer.
