@@ -1,6 +1,6 @@
 /* ============================================================
-   INTERFÉRENCES — Version Corrigée (Sticky Stacking)
-   Cible : Hiérarchie claire, Titres multi-lignes, Scroll fluide
+   INTERFÉRENCES — Version Équilibrée (Conversation)
+   Cible : 80 CPL, Équilibre hauteur d'x, Gris Typo Harmonisé
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=Space+Grotesk:wght@400;500;700&display=swap');
@@ -11,9 +11,9 @@
   --accent:       #6b7c6e;
   --rule:         #cdc9be;
   --muted:        #6b6860;
+  --ai-text:      #4a4740; /* Gris sombre pour équilibrer le contraste */
   --band-bg:      #3a4a3d;
   --band-text:    #c8d4c4;
-  --obs-bg:       #faf8f4;
 
   --font-logo:    'Syne', sans-serif;
   --font-body:    'Literata', serif;
@@ -33,14 +33,15 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-body);
-  font-optical-sizing: auto;
-  line-height: 1.65;
-  max-width: 720px;
+  /* Indispensable pour que la Literata s'ajuste à 0.92rem */
+  font-optical-sizing: auto; 
+  line-height: 1.6;
+  max-width: 720px; 
   margin: 0 auto;
   padding: 3.5rem 2rem 6rem;
 }
 
-/* ── Logo ───────────────────────────────────────────────────── */
+/* ── Logo & Header ─────────────────────────────────────────── */
 
 header h1 {
   font-family: var(--font-logo);
@@ -79,7 +80,7 @@ header .subtitle {
   letter-spacing: 0.05em;
 }
 
-/* ── STRUCTURE DES ENTRÉES (La Correction) ─────────────────── */
+/* ── Structure des Entrées (Journal) ─────────────────────── */
 
 .journal-entry {
   position: relative;
@@ -110,10 +111,7 @@ header .subtitle {
   padding-left: 1rem;
   margin-left: -1rem;
   border-top-color: transparent;
-  transition: all 0.3s ease;
 }
-
-/* ── Typographie des Entrées ──────────────────────────────── */
 
 .entry-date {
   display: block;
@@ -148,8 +146,6 @@ header .subtitle {
   text-transform: lowercase;
 }
 
-/* ── Contenu des Entrées ────────────────────────────────────── */
-
 .entry-content {
   display: none;
   padding: 1rem 0 4rem;
@@ -159,19 +155,48 @@ header .subtitle {
   display: block;
 }
 
-/* ── Corps de Texte & Citations ────────────────────────────── */
+/* ── Hiérarchie des Voix (Dialogue) ───────────────────────── */
 
-p { margin-bottom: 1.25rem; }
+/* 1. Voix Humaine (Literata) */
+.author-voice {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-optical-sizing: auto; /* Sécurité pour le rendu des empattements */
+  line-height: 1.65;
+  color: var(--ink);
+  margin-bottom: 2.5rem;
+}
 
-.observation {
+/* 2. Voix IA (Space Grotesk) */
+.ai-voice {
   font-family: var(--font-sans);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  /* La Space Grotesk n'a pas d'axe optique, mais l'auto ne nuit pas */
+  font-optical-sizing: auto; 
   line-height: 1.5;
-  color: var(--muted);
-  background: var(--obs-bg);
-  padding: 1rem;
+  color: #4a4740;
+  
+  margin: 2.5rem 0 2.5rem 2rem; 
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--accent);
+}
+
+.author-voice p, .ai-voice p {
+  margin-bottom: 1.25rem;
+}
+
+.author-voice p:last-child, .ai-voice p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Éléments Typographiques Spéciaux ─────────────────────── */
+
+blockquote {
+  font-style: italic;
+  border-left: 3px solid var(--accent);
+  padding-left: 1.5rem;
   margin: 2rem 0;
-  border-radius: 2px;
 }
 
 .observation-plain {
@@ -181,22 +206,24 @@ p { margin-bottom: 1.25rem; }
   color: var(--muted);
 }
 
-blockquote {
-  font-style: italic;
-  border-left: 3px solid var(--accent);
-  padding-left: 1.5rem;
-  margin: 2rem 0;
-}
-
 /* ── Responsive ────────────────────────────────────────────── */
 
 @media (max-width: 600px) {
-  body { padding: 2rem 1.25rem; }
+  body { 
+    padding: 2rem 1.25rem;
+    max-width: 100%;
+  }
   
   header h1 { font-size: 2.2rem; }
   
   .entry-title {
     font-size: 0.95rem;
     line-height: 1.4;
+  }
+
+  .ai-voice {
+    margin-left: 1rem;
+    padding-left: 1rem;
+    font-size: 1.02rem;
   }
 }

@@ -16,8 +16,9 @@
   <section class="site-section" id="journal">
     <h2>🎙️ Journal</h2>
     <div class="section-content" id="journal-list">
+      
       <article class="journal-entry">
-        <div class="entry-toggle" data-src="journal/2026-04-04-ce-qui-reste-du-bruit.html">
+        <div class="entry-toggle" data-src="journal/template.html">
           <span class="entry-date">4 avril 2026</span>
           <div class="entry-toggle-grid">
             <span class="entry-title">Ce qui reste du bruit. 1997–2026.</span>
@@ -38,7 +39,7 @@
   </section>
 
   <script>
-    // 1. Fonction de chargement pour les sections fixes (immédiat)
+    // 1. Chargement des sections fixes (Rotations, etc.)
     function loadSection(contentId, src) {
       const container = document.getElementById(contentId);
       if (!container) return;
@@ -54,22 +55,19 @@
           }
         })
         .catch(() => {
-          container.innerHTML = '<p class="observation">— Erreur de chargement.</p>';
+          container.innerHTML = '<p class="observation-plain">— Erreur de chargement.</p>';
         });
     }
 
-    // Lancer le chargement des sections dès maintenant
-    loadSection('transmissions-content', 'transmissions/transmissions.html');
     loadSection('rotations-content', 'rotations/rotations.html');
 
-    // 2. Gestion des entrées du journal (cliquables)
+    // 2. Gestion dynamique du Journal
     document.querySelectorAll('.entry-toggle').forEach(toggle => {
       const container = toggle.closest('.journal-entry');
       const content = container.querySelector('.entry-content');
       const hint = toggle.querySelector('.toggle-hint');
       const src = toggle.dataset.src;
 
-      // Initialisation de la flèche par défaut au chargement
       hint.textContent = 'ouvrir →';
 
       toggle.addEventListener('click', () => {
@@ -97,13 +95,13 @@
             const doc = parser.parseFromString(html, 'text/html');
             const main = doc.querySelector('main');
             if (main) {
-              const toRemove = main.querySelectorAll('p:has(.entry-date), p:has(.entry-title)');
-              toRemove.forEach(el => el.remove());
+              // On injecte directement le contenu du <main> qui contient
+              // déjà les classes .author-voice et .ai-voice
               content.innerHTML = main.innerHTML;
             }
           })
           .catch(() => {
-            content.innerHTML = '<p class="observation">— Erreur de chargement.</p>';
+            content.innerHTML = '<p class="observation-plain">— Erreur de chargement.</p>';
           });
       });
     });    
