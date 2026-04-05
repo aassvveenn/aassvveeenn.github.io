@@ -255,6 +255,9 @@ figcaption {
   /* On ne touche PAS au h1, il restera à 9.7cqw */
   /* Mais comme son conteneur (header) est maintenant plus petit, */
   /* le titre va rétrécir proportionnellement. */
+  header h1 {
+    font-size: 8cqw; 
+  }
   
   .entry-title {
     font-size: 0.95rem;
