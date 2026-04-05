@@ -247,7 +247,7 @@ figcaption {
 
   header h1 {
     /* Sur mobile, on bloque une taille qui "passe partout" (iPhone SE à Pro Max) */
-    font-size: 2.1rem; 
+    font-size: 1.6rem; 
     letter-spacing: -0.04em;
   }
 
