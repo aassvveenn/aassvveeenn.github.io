@@ -245,7 +245,16 @@ figcaption {
     max-width: 100%;
   }
   
-  /*header h1 { font-size: 2.2rem; }*/
+  header {
+    /* On force le conteneur à faire la largeur réelle disponible */
+    /* 100% de la largeur parente MOINS les paddings gauche/droite */
+    width: calc(100vw - 2.5rem); 
+    margin: 0;
+  }
+
+  /* On ne touche PAS au h1, il restera à 9.7cqw */
+  /* Mais comme son conteneur (header) est maintenant plus petit, */
+  /* le titre va rétrécir proportionnellement. */
   
   .entry-title {
     font-size: 0.95rem;
