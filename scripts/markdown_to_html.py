@@ -1,49 +1,69 @@
 #!/usr/bin/env python3
 """
-Markdown → HTML converter
+Markdown → HTML converter (v2 — markdown-it-py)
 Transforms a Markdown file following the ECRI-template.md format
 into HTML blocks following the template.html structure.
 
 Usage:
     python markdown_to_html.py input.md [output.html]
     If output path is omitted, prints to stdout.
+
+Requires:
+    pip install markdown-it-py
 """
 
 import re
 import sys
 from pathlib import Path
+from markdown_it import MarkdownIt
 
 
 # ---------------------------------------------------------------------------
-# Inline Markdown → HTML
-# ---------------------------------------------------------------------------
-
-def inline_md_to_html(text: str) -> str:
-    """Convert inline Markdown (bold, italic, links) to HTML."""
-    # Bold+italic: ***text*** or ___text___
-    text = re.sub(r'\*\*\*(.+?)\*\*\*', r'<strong><em>\1</em></strong>', text)
-    text = re.sub(r'___(.+?)___',        r'<strong><em>\1</em></strong>', text)
-    # Bold: **text** or __text__
-    text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
-    text = re.sub(r'__(.+?)__',     r'<strong>\1</strong>', text)
-    # Italic: *text* or _text_
-    text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
-    text = re.sub(r'_(.+?)_',   r'<em>\1</em>', text)
-    # Links: [label](url)
-    text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2" target="_blank" rel="noopener noreferrer">\1</a>', text)
-    return text
-
-
-# ---------------------------------------------------------------------------
-# YouTube helpers
+# Constants
 # ---------------------------------------------------------------------------
 
 YOUTUBE_RE = re.compile(
     r'(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)([A-Za-z0-9_-]{11})'
 )
 
+SECTION_RE = re.compile(
+    r'^##\s+(Prompt|Response|Modèle pour les réponses)\s*:?\s*(.*)$',
+    re.IGNORECASE,
+)
+DATE_RE  = re.compile(r'^\d{4}-\d{2}-\d{2}$')
+TITLE_RE = re.compile(r'^#\s+')
+
+
+# ---------------------------------------------------------------------------
+# Markdown-it setup
+# ---------------------------------------------------------------------------
+
+def build_md() -> MarkdownIt:
+    """Return a MarkdownIt instance with HTML passthrough enabled."""
+    return MarkdownIt("commonmark", {"html": True})
+
+
+# ---------------------------------------------------------------------------
+# Post-processing helpers applied to rendered HTML
+# ---------------------------------------------------------------------------
+
+def rewrite_img_src(html: str) -> str:
+    """Rewrite src of every <img> tag only: keep filename, prefix journal/media/.
+    iframe src attributes are left untouched."""
+    def _rewrite_tag(m: re.Match) -> str:
+        tag = m.group(0)
+        def _fix_src(sm: re.Match) -> str:
+            src = sm.group(1)
+            if src.startswith("journal/media/"):
+                return sm.group(0)
+            filename = Path(src).name
+            return f'src="journal/media/{filename}"'
+        return re.sub(r'src=["\']([^"\']+)["\']', _fix_src, tag)
+
+    return re.sub(r'<img\b[^>]*>', _rewrite_tag, html)
+
+
 def youtube_embed(video_id: str) -> str:
-    """Return a responsive YouTube iframe block."""
     return (
         '<div class="video-wrapper" style="position:relative;padding-bottom:56.25%;'
         'height:0;overflow:hidden;">'
@@ -53,170 +73,84 @@ def youtube_embed(video_id: str) -> str:
         '</div>'
     )
 
-def try_youtube_image_link(line: str):
+
+def replace_youtube_links(html: str) -> str:
     """
-    Detect a Markdown image whose URL is a YouTube link:
-        ![caption](https://www.youtube.com/watch?v=ID)
-    Returns an embed string or None.
+    Replace YouTube patterns in rendered HTML:
+    1. <img src="youtube_url" ...> → responsive embed (Markdown image with YT url)
+    2. Bare paragraph containing only a YouTube URL → embed
     """
-    m = re.match(r'!\[([^\]]*)\]\(([^)]+)\)', line.strip())
-    if m:
-        url = m.group(2)
-        yt = YOUTUBE_RE.search(url)
+    # Pattern 1: <img> whose src is a YouTube URL
+    def _img_yt(m: re.Match) -> str:
+        src_m = re.search(r'src=["\']([^"\']+)["\']', m.group(0))
+        if src_m:
+            yt = YOUTUBE_RE.search(src_m.group(1))
+            if yt:
+                return youtube_embed(yt.group(1))
+        return m.group(0)
+
+    html = re.sub(r'<img\b[^>]*/>', _img_yt, html)
+
+    # Pattern 2: bare paragraph containing only a YouTube URL
+    def _bare_yt_para(m: re.Match) -> str:
+        content = m.group(1).strip()
+        yt = YOUTUBE_RE.fullmatch(content)
         if yt:
             return youtube_embed(yt.group(1))
-    return None
+        return m.group(0)
 
-def try_bare_youtube(line: str):
-    """Detect a bare YouTube URL on its own line."""
-    stripped = line.strip()
-    yt = YOUTUBE_RE.fullmatch(stripped)
-    if not yt:
-        yt = YOUTUBE_RE.match(stripped)
-        if yt and yt.group(0) == stripped:
-            pass
-        else:
-            yt = None
-    if yt:
-        return youtube_embed(yt.group(1))
-    return None
+    html = re.sub(r'<p>([^<]+)</p>', _bare_yt_para, html)
+
+    return html
 
 
-# ---------------------------------------------------------------------------
-# Image helper
-# ---------------------------------------------------------------------------
-
-def parse_img_tag(line: str):
-    stripped = line.strip()
-    if not stripped.lower().startswith('<img '):
-        return None
-    stripped = re.sub(
-        r'src=["\']([^"\']+)["\']',
-        lambda m: f'src="journal/media/{Path(m.group(1)).name}"',
-        stripped
-    )
-    if 'max-width' not in stripped:
-        stripped = stripped.rstrip('>').rstrip('/')
-        stripped += ' style="max-width:100%;height:auto;">'
-    return stripped
-
-def parse_md_image(line: str):
+def render_block_content(lines: list[str], model_prefix: str | None) -> str:
     """
-    Convert a Markdown image ![alt](src …) to a responsive <img> tag.
-    Returns HTML string or None.
+    Render a list of raw Markdown lines to an HTML fragment.
+    Optionally prepends an italic model label paragraph.
     """
-    m = re.match(r'!\[([^\]]*)\]\(([^)]+)\)', line.strip())
-    if m:
-        alt, src = m.group(1), m.group(2)
-        # Extract existing style attribute if embedded in src (unlikely but safe)
-        return f'<img src="journal/media/{Path(src).name}" alt="{alt}" style="max-width:100%;height:auto;">'
-    return None
+    md = build_md()
+    raw = "".join(lines)
+    html = md.render(raw)
+
+    # YouTube first (before src rewriting which would mangle YouTube URLs)
+    html = replace_youtube_links(html)
+
+    # Then rewrite remaining <img> src paths
+    html = rewrite_img_src(html)
+
+    if model_prefix:
+        html = f"<p><em>{model_prefix}</em></p>\n" + html
+
+    return html.strip()
 
 
 # ---------------------------------------------------------------------------
-# Block rendering
+# ECRI segmentation (pure Python — no lib knows this format)
 # ---------------------------------------------------------------------------
-
-def render_block(lines: list[str], css_class: str) -> str:
-    """
-    Convert a list of raw Markdown lines into a <div class="…"> block
-    containing <p> elements.
-    Handles:
-      - blank-line paragraph separation
-      - inline formatting
-      - images (raw <img> and Markdown ![])
-      - YouTube embeds (image-link syntax and bare URLs)
-    """
-    paragraphs = []   # list of rendered HTML strings
-    current_lines = []
-
-    def flush():
-        if current_lines:
-            inner = ' '.join(current_lines).strip()
-            if inner:
-                paragraphs.append(f'<p>{inline_md_to_html(inner)}</p>')
-            current_lines.clear()
-
-    for raw_line in lines:
-        line = raw_line.rstrip('\n')
-
-        # Blank line → paragraph break
-        if not line.strip():
-            flush()
-            continue
-
-        # Raw <img> tag
-        img_tag = parse_img_tag(line)
-        if img_tag:
-            flush()
-            paragraphs.append(img_tag)
-            continue
-        
-        # Raw <iframe> tag
-        if line.strip().lower().startswith('<iframe '):
-            flush()
-            paragraphs.append(line.strip())
-            continue
-        
-        # YouTube via image-link syntax ![caption](youtube_url)
-        yt_embed = try_youtube_image_link(line)
-        if yt_embed:
-            flush()
-            paragraphs.append(yt_embed)
-            continue
-
-        # Bare YouTube URL
-        yt_bare = try_bare_youtube(line)
-        if yt_bare:
-            flush()
-            paragraphs.append(yt_bare)
-            continue
-
-        # Markdown image (non-YouTube)
-        md_img = parse_md_image(line)
-        if md_img:
-            flush()
-            paragraphs.append(md_img)
-            continue
-
-        # Regular text line → accumulate
-        current_lines.append(line.strip())
-
-    flush()
-
-    if not paragraphs:
-        return ''
-
-    inner_html = '\n    '.join(paragraphs)
-    return f'  <div class="{css_class}">\n    {inner_html}\n  </div>'
-
-
-# ---------------------------------------------------------------------------
-# Markdown parser
-# ---------------------------------------------------------------------------
-
-SECTION_RE = re.compile(r'^##\s+(Prompt|Response|Modèle pour les réponses)\s*:?\s*(.*)$', re.IGNORECASE)
-DATE_RE    = re.compile(r'^\d{4}-\d{2}-\d{2}$')
-TITLE_RE   = re.compile(r'^#\s+')  # H1 title
 
 def parse_ecri(md_text: str):
     """
-    Parse the ECRI markdown file.
+    Parse ECRI-formatted Markdown into structured sections.
+
     Returns:
-        model_label : str | None   — content of "Modèle pour les réponses" or None
-        sections    : list of (type, title, lines)
-                      type  in {'Prompt', 'Response'}
-                      title is a str (possibly empty) — only set for Prompt sections
+        model_label (str | None)
+        sections: list of (type, title, lines)
+            type  : 'Prompt' | 'Response'
+            title : str (may be empty)
+            lines : list[str]
     """
     lines = md_text.splitlines(keepends=True)
     model_label = None
-    sections = []          # list of ('Prompt'|'Response', title, [lines])
-    current_type = None
-    current_title = ''
+    sections = []
+
+    current_type  = None
+    current_title = ""
     current_lines = []
     skip_next_date = False
+    collecting_model = False
 
-    def flush_section():
+    def flush():
         if current_type and current_lines:
             # Strip leading/trailing blank lines
             stripped = current_lines.copy()
@@ -230,47 +164,50 @@ def parse_ecri(md_text: str):
     for line in lines:
         stripped = line.strip()
 
-        # Skip H1 title
+        # Ignore H1 title
         if TITLE_RE.match(stripped):
             continue
 
-        # Detect section headers
         m = SECTION_RE.match(stripped)
         if m:
-            flush_section()
-            current_type = None
-            current_title = ''
+            flush()
+            current_type  = None
+            current_title = ""
             current_lines = []
-            section_name = m.group(1)
-            inline_title = m.group(2).strip()
+            collecting_model = False
 
-            if section_name.lower() == 'modèle pour les réponses':
-                current_type = '__model__'
+            section_name  = m.group(1)
+            inline_title  = m.group(2).strip()
+
+            if section_name.lower() == "modèle pour les réponses":
+                collecting_model = True
+                skip_next_date = False
+            elif section_name.lower() == "prompt":
+                current_type  = "Prompt"
+                current_title = inline_title
                 skip_next_date = True
-            elif section_name.lower() == 'prompt':
-                current_type = 'Prompt'
-                current_title = inline_title  # may be empty string
-                skip_next_date = True
-            elif section_name.lower() == 'response':
-                current_type = 'Response'
+            elif section_name.lower() == "response":
+                current_type  = "Response"
                 skip_next_date = True
             continue
 
-        # Skip date lines immediately after a section header
+        # Collect model label (single non-empty line after the header)
+        if collecting_model:
+            if stripped:
+                model_label = stripped
+                collecting_model = False
+            continue
+
+        # Skip date line immediately following a section header
         if skip_next_date and DATE_RE.match(stripped):
             skip_next_date = False
             continue
         skip_next_date = False
 
-        # Accumulate content
-        if current_type == '__model__':
-            if stripped:  # first non-blank content is the model label
-                model_label = stripped
-                current_type = None  # section consumed
-        elif current_type in ('Prompt', 'Response'):
+        if current_type in ("Prompt", "Response"):
             current_lines.append(line)
 
-    flush_section()
+    flush()
     return model_label, sections
 
 
@@ -280,28 +217,29 @@ def parse_ecri(md_text: str):
 
 def convert(md_text: str) -> str:
     model_label, sections = parse_ecri(md_text)
-
     blocks = []
+    first_response = True
 
     for sec_type, sec_title, sec_lines in sections:
-        css_class = 'author-voice' if sec_type == 'Prompt' else 'ai-voice'
+        css_class = "author-voice" if sec_type == "Prompt" else "ai-voice"
 
-        # Inter-title: only for Prompt sections with a non-empty title
-        if sec_type == 'Prompt' and sec_title:
+        # Inter-title: Prompt sections with a non-empty title
+        if sec_type == "Prompt" and sec_title:
             blocks.append(f'  <h3 class="section-title">{sec_title}</h3>')
 
-        # Prepend model label to the first block if present
-        effective_lines = sec_lines
-        if model_label:
-            label_line = f'*{model_label}*\n'
-            effective_lines = [label_line, '\n'] + list(sec_lines)
-            model_label = None  # only prepend once (to very first block)
+        # Inject model label in italics at the start of the first Response block
+        prefix = None
+        if sec_type == "Response" and first_response and model_label:
+            prefix = model_label
+            first_response = False
 
-        rendered = render_block(effective_lines, css_class)
-        if rendered:
-            blocks.append(rendered)
+        content_html = render_block_content(sec_lines, prefix)
+        if content_html:
+            # Indent content for readability
+            indented = "\n".join("    " + l for l in content_html.splitlines())
+            blocks.append(f'  <div class="{css_class}">\n{indented}\n  </div>')
 
-    return '<main>\n' + '\n\n'.join(blocks) + '\n</main>'
+    return "<main>\n" + "\n\n".join(blocks) + "\n</main>"
 
 
 # ---------------------------------------------------------------------------
@@ -310,24 +248,24 @@ def convert(md_text: str) -> str:
 
 def main():
     if len(sys.argv) < 2:
-        print('Usage: python ecri_md_to_html.py input.md [output.html]', file=sys.stderr)
+        print("Usage: python markdown_to_html.py input.md [output.html]", file=sys.stderr)
         sys.exit(1)
 
     input_path = Path(sys.argv[1])
     if not input_path.exists():
-        print(f'Error: file not found: {input_path}', file=sys.stderr)
+        print(f"Error: file not found: {input_path}", file=sys.stderr)
         sys.exit(1)
 
-    md_text = input_path.read_text(encoding='utf-8')
+    md_text = input_path.read_text(encoding="utf-8")
     html = convert(md_text)
 
     if len(sys.argv) >= 3:
         output_path = Path(sys.argv[2])
-        output_path.write_text(html, encoding='utf-8')
-        print(f'Written to {output_path}')
+        output_path.write_text(html, encoding="utf-8")
+        print(f"Written to {output_path}")
     else:
         print(html)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
