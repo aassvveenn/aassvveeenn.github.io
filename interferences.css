@@ -43,12 +43,21 @@ body {
 
 /* ── Logo & Header ─────────────────────────────────────────── */
 
+header {
+  container-type: inline-size; /* On dit au header de mesurer sa propre largeur */
+  width: 100%;
+  max-width: 720px; /* On s'aligne sur la largeur de ton texte */
+  margin: 0 auto;
+}
+
 header h1 {
   font-family: var(--font-logo);
   font-weight: 800;
-  font-size: clamp(1.2rem, 5vw, 3.4rem);
-  letter-spacing: -0.04em;
+  font-size: 9.7cqw; 
+  
   line-height: 0.95;
+  letter-spacing: -0.04em;
+  white-space: nowrap; /* Interdiction de passer à la ligne */
   margin-bottom: 0.5rem;
 }
 
@@ -244,7 +253,7 @@ figcaption {
   }
 
   .ai-voice {
-    margin-left: 1rem;
+    margin-left: 0;
     padding-left: 1rem;
     font-size: 0.95rem; /* identique au desktop, pas de surride */
   }
