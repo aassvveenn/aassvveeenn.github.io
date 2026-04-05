@@ -244,21 +244,13 @@ figcaption {
     padding: 2rem 1.25rem;
     max-width: 100%;
   }
-  
-  header {
-    /* On force le conteneur à faire la largeur réelle disponible */
-    /* 100% de la largeur parente MOINS les paddings gauche/droite */
-    width: calc(100vw - 2.5rem); 
-    margin: 0;
+
+  header h1 {
+    /* Sur mobile, on bloque une taille qui "passe partout" (iPhone SE à Pro Max) */
+    font-size: 2.1rem; 
+    letter-spacing: -0.04em;
   }
 
-  /* On ne touche PAS au h1, il restera à 9.7cqw */
-  /* Mais comme son conteneur (header) est maintenant plus petit, */
-  /* le titre va rétrécir proportionnellement. */
-  header h1 {
-    font-size: 8cqw; 
-  }
-  
   .entry-title {
     font-size: 0.95rem;
     line-height: 1.4;
