@@ -195,7 +195,7 @@ def render_block(lines: list[str], css_class: str) -> str:
 # Markdown parser
 # ---------------------------------------------------------------------------
 
-SECTION_RE = re.compile(r'^##\s+(Prompt|Response|Modèle pour les réponses)\s*:?\s*$', re.IGNORECASE)
+SECTION_RE = re.compile(r'^##\s+(Prompt|Response|Modèle pour les réponses)\s*:?\s*(.*)$', re.IGNORECASE)
 DATE_RE    = re.compile(r'^\d{4}-\d{2}-\d{2}$')
 TITLE_RE   = re.compile(r'^#\s+')  # H1 title
 
@@ -204,12 +204,15 @@ def parse_ecri(md_text: str):
     Parse the ECRI markdown file.
     Returns:
         model_label : str | None   — content of "Modèle pour les réponses" or None
-        sections    : list of (type, lines)  — type in {'Prompt', 'Response'}
+        sections    : list of (type, title, lines)
+                      type  in {'Prompt', 'Response'}
+                      title is a str (possibly empty) — only set for Prompt sections
     """
     lines = md_text.splitlines(keepends=True)
     model_label = None
-    sections = []          # list of ('Prompt'|'Response', [lines])
+    sections = []          # list of ('Prompt'|'Response', title, [lines])
     current_type = None
+    current_title = ''
     current_lines = []
     skip_next_date = False
 
@@ -222,7 +225,7 @@ def parse_ecri(md_text: str):
             while stripped and not stripped[-1].strip():
                 stripped.pop()
             if stripped:
-                sections.append((current_type, stripped))
+                sections.append((current_type, current_title, stripped))
 
     for line in lines:
         stripped = line.strip()
@@ -236,18 +239,19 @@ def parse_ecri(md_text: str):
         if m:
             flush_section()
             current_type = None
+            current_title = ''
             current_lines = []
             section_name = m.group(1)
+            inline_title = m.group(2).strip()
 
             if section_name.lower() == 'modèle pour les réponses':
-                # Next non-blank, non-date line is the model label
-                # We'll read it inline below by setting a flag
                 current_type = '__model__'
                 skip_next_date = True
-            elif section_name == 'Prompt':
+            elif section_name.lower() == 'prompt':
                 current_type = 'Prompt'
+                current_title = inline_title  # may be empty string
                 skip_next_date = True
-            elif section_name == 'Response':
+            elif section_name.lower() == 'response':
                 current_type = 'Response'
                 skip_next_date = True
             continue
@@ -279,10 +283,14 @@ def convert(md_text: str) -> str:
 
     blocks = []
 
-    for sec_type, sec_lines in sections:
+    for sec_type, sec_title, sec_lines in sections:
         css_class = 'author-voice' if sec_type == 'Prompt' else 'ai-voice'
 
-        # Prepend model label to the first block of each section if present
+        # Inter-title: only for Prompt sections with a non-empty title
+        if sec_type == 'Prompt' and sec_title:
+            blocks.append(f'  <h3 class="section-title">{sec_title}</h3>')
+
+        # Prepend model label to the first block if present
         effective_lines = sec_lines
         if model_label:
             label_line = f'*{model_label}*\n'

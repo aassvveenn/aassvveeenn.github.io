@@ -22,7 +22,7 @@ Ta réponse. Ta réponse. Ta réponse. Ta réponse. Ta réponse. Ta réponse. Ta
 
 En plusieurs paragraphes fournis. En plusieurs paragraphes fournis. En plusieurs paragraphes fournis. En plusieurs paragraphes **avec du texte mis en évidence.** En plusieurs paragraphes fournis : *concept mis en avant*. En plusieurs paragraphes fournis. En plusieurs paragraphes fournis. En plusieurs paragraphes fournis. 
 
-## Prompt:
+## Prompt: Un inter-titre à placer
 2012-04-06
 
 And here we go again. And here we go again. And here we go again. And here we go again. And here we go again. And here we go again. And here we go again. And here we go again. And here we go again. And here we go again. 
