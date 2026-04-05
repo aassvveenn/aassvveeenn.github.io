@@ -151,7 +151,13 @@ def render_block(lines: list[str], css_class: str) -> str:
             flush()
             paragraphs.append(img_tag)
             continue
-
+        
+        # Raw <iframe> tag
+        if line.strip().lower().startswith('<iframe '):
+            flush()
+            paragraphs.append(line.strip())
+            continue
+        
         # YouTube via image-link syntax ![caption](youtube_url)
         yt_embed = try_youtube_image_link(line)
         if yt_embed:

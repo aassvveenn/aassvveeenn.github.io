@@ -5,9 +5,11 @@ Claude Opus 4.6
 ## Prompt:
 2012-03-04
 
+<iframe style="border: 0; width: 350px; height: 350px;" src="https://bandcamp.com/EmbeddedPlayer/album=1181690627/size=large/bgcol=ffffff/linkcol=0687f5/minimal=true/transparent=true/" seamless></iframe>
+
 Mon prompt. Mon prompt. Mon prompt. Mon prompt. Mon prompt. Mon prompt. Mon prompt. Mon prompt. Mon prompt. Mon prompt. Mon prompt. Mon prompt. Mon prompt. Mon prompt. 
 
-<img src="slyidab.png" alt="Une image responsive" style="max-width: 50%; height: auto;">
+<img src="media/daft_punk_da_funk_moviejpg.jpg" alt="Une image responsive" style="max-width: 50%; height: auto;">
 
 En plusieurs paragraphes structurés. En plusieurs paragraphes structurés. En plusieurs paragraphes *mis en forme*. En plusieurs paragraphes structurés. En plusieurs paragraphes structurés. En plusieurs paragraphes structurés. En plusieurs paragraphes structurés **mis en forme.** En plusieurs paragraphes structurés. [Un lien externe](https://www.youtube.com/watch?v=Kuy3WOIftYk) dans une phrase.
 
