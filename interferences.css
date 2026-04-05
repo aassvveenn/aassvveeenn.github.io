@@ -3,7 +3,7 @@
    Cible : 80 CPL, Équilibre hauteur d'x, Gris Typo Harmonisé
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=Space+Grotesk:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600..800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;1,7..72,400&family=Space+Grotesk:wght@400;500;700&display=swap');
 
 :root {
   --bg:           #f2efe8;
@@ -177,7 +177,7 @@ header .subtitle {
   line-height: 1.5;
   color: #4a4740;
   
-  margin: 2.5rem 0 2.5rem 2rem; 
+  margin: 2.5rem 0; 
   padding-left: 1.5rem;
   border-left: 2px solid var(--accent);
 }
@@ -199,11 +199,33 @@ blockquote {
   margin: 2rem 0;
 }
 
+.section-title {
+  font-family: var(--font-logo);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--ink);
+  margin: 0 0 1rem;
+}
+
 .observation-plain {
   font-family: var(--font-sans);
   font-size: 0.9rem;
   line-height: 1.5;
   color: var(--muted);
+}
+
+figure {
+  margin: 2rem 0;
+}
+
+figcaption {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  line-height: 1.4;
 }
 
 /* ── Responsive ────────────────────────────────────────────── */
@@ -224,6 +246,6 @@ blockquote {
   .ai-voice {
     margin-left: 1rem;
     padding-left: 1rem;
-    font-size: 1.02rem;
+    font-size: 0.95rem; /* identique au desktop, pas de surride */
   }
 }
