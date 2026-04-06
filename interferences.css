@@ -11,7 +11,7 @@
   --accent:       #6b7c6e;
   --rule:         #cdc9be;
   --muted:        #6b6860;
-  --ai-text:      #4a4740; /* Gris sombre pour équilibrer le contraste */
+  --ai-text:      #4a4740;
   --band-bg:      #3a4a3d;
   --band-text:    #c8d4c4;
 
@@ -26,7 +26,7 @@
 
 html {
   font-size: 17px;
-  -webkit-text-size-adjust: 100%; /* Empêche l'agrandissement sauvage sur iOS/DuckDuckGo */
+  -webkit-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
@@ -35,38 +35,14 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-body);
-  /* Indispensable pour que la Literata s'ajuste à 0.92rem */
-  font-optical-sizing: auto; 
+  font-optical-sizing: auto;
   line-height: 1.6;
-  max-width: 720px; 
+  max-width: 720px;
   margin: 0 auto;
   padding: 3.5rem 2rem 6rem;
 }
 
-/* ── Logo & Header ─────────────────────────────────────────── */
-
-header {
-  container-type: inline-size; /* On dit au header de mesurer sa propre largeur */
-  width: 100%;
-  max-width: 720px; /* On s'aligne sur la largeur de ton texte */
-  margin: 0 auto;
-}
-
-header h1 {
-  font-family: var(--font-logo);
-  font-weight: 800;
-
-  /* MIN : 1.8rem -> Empêche le titre d'être trop petit sur les vieux téléphones.
-     IDÉAL : 9.5cqw -> Ton ratio (légèrement baissé de 9.7 à 9.5 pour absorber les erreurs de rendu d'Opera/DDG).
-     MAX : 4rem -> Empêche le titre d'exploser en mode paysage.
-  */
-  font-size: clamp(1.8rem, 9.5cqw, 4rem);
-
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-  white-space: nowrap; /* Interdiction de passer à la ligne */
-  margin-bottom: 0.5rem;
-}
+/* ── Header ────────────────────────────────────────────────── */
 
 header .subtitle {
   font-family: var(--font-sans);
@@ -74,6 +50,7 @@ header .subtitle {
   color: var(--muted);
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  margin-top: 0.5rem;
 }
 
 /* ── Sections ────────────────────────────────────────────── */
@@ -177,7 +154,7 @@ header .subtitle {
 .author-voice {
   font-family: var(--font-body);
   font-size: 0.92rem;
-  font-optical-sizing: auto; /* Sécurité pour le rendu des empattements */
+  font-optical-sizing: auto;
   line-height: 1.65;
   color: var(--ink);
   margin-bottom: 2.5rem;
@@ -188,8 +165,7 @@ header .subtitle {
   font-family: var(--font-sans);
   font-size: 0.95rem;
   font-weight: 500;
-  /* La Space Grotesk n'a pas d'axe optique, mais l'auto ne nuit pas */
-  font-optical-sizing: auto; 
+  font-optical-sizing: auto;
   line-height: 1.5;
   color: #4a4740;
   
@@ -248,7 +224,7 @@ figcaption {
 
 @media (max-width: 600px) {
   body { 
-    padding: 2rem 1.25rem; /* Marges totales = 2.5rem */
+    padding: 2rem 1.25rem;
     max-width: 100%;
   }
 
@@ -260,6 +236,6 @@ figcaption {
   .ai-voice {
     margin-left: 0;
     padding-left: 1rem;
-    font-size: 0.95rem; /* identique au desktop, pas de surride */
+    font-size: 0.95rem;
   }
 }

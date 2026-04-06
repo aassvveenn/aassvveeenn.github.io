@@ -4,12 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interférences</title>
-  <link rel="stylesheet" href="interferences.css?v=2.2">
+  <link rel="stylesheet" href="interferences.css?v=2.3">
 </head>
 <body>
 
   <header>
-    <h1>Interférences</h1>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 115"
+         width="100%" role="img" aria-label="Interférences">
+      <text y="97"
+            style="font-family:'Syne',sans-serif;font-weight:800;font-size:108px;letter-spacing:-0.04em;fill:#1e1c18;">
+        Interférences
+      </text>
+    </svg>
     <p class="subtitle">Carnet musique &amp; écriture — Asven × claude.ai</p>
   </header>
 
@@ -95,8 +101,6 @@
             const doc = parser.parseFromString(html, 'text/html');
             const main = doc.querySelector('main');
             if (main) {
-              // On injecte directement le contenu du <main> qui contient
-              // déjà les classes .author-voice et .ai-voice
               content.innerHTML = main.innerHTML;
             }
           })
