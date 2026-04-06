@@ -55,8 +55,13 @@ header {
 header h1 {
   font-family: var(--font-logo);
   font-weight: 800;
-  font-size: 9.7cqw; 
-  
+
+  /* MIN : 1.8rem -> Empêche le titre d'être trop petit sur les vieux téléphones.
+     IDÉAL : 9.5cqw -> Ton ratio (légèrement baissé de 9.7 à 9.5 pour absorber les erreurs de rendu d'Opera/DDG).
+     MAX : 4rem -> Empêche le titre d'exploser en mode paysage.
+  */
+  font-size: clamp(1.8rem, 9.5cqw, 4rem);
+
   line-height: 0.95;
   letter-spacing: -0.04em;
   white-space: nowrap; /* Interdiction de passer à la ligne */
@@ -245,17 +250,6 @@ figcaption {
   body { 
     padding: 2rem 1.25rem; /* Marges totales = 2.5rem */
     max-width: 100%;
-  }
-
-  header h1 {
-    /* LA LOGIQUE : 
-       (Largeur Écran - Marges) * Ton Ratio / 100 
-       On ajoute un clamp pour le confort et le mode paysage.
-    */
-    font-size: clamp(2rem, calc((100vw - 2.5rem) * 0.113), 4.5rem);
-    
-    white-space: nowrap;
-    line-height: 1;
   }
 
   .entry-title {
