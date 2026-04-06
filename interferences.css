@@ -26,7 +26,9 @@
 
 html {
   font-size: 17px;
-  -webkit-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%; /* Empêche l'agrandissement sauvage sur iOS/DuckDuckGo */
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -246,9 +248,12 @@ figcaption {
   }
 
   header h1 {
-    /* Sur mobile, on bloque une taille qui "passe partout" (iPhone SE à Pro Max) */
-    font-size: 1.6rem; 
+    /* 11vw signifie : "Prends 11% de la largeur de l'écran" */
+    /* C'est une valeur qui s'ajustera instantanément si tu pivotes */
+    font-size: 11vw; 
     letter-spacing: -0.04em;
+    white-space: nowrap;
+    display: block;
   }
 
   .entry-title {
