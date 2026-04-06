@@ -250,7 +250,7 @@ figcaption {
   header h1 {
     /* 11vw signifie : "Prends 11% de la largeur de l'écran" */
     /* C'est une valeur qui s'ajustera instantanément si tu pivotes */
-    font-size: 11vw; 
+    font-size: 7.5vw; 
     letter-spacing: -0.04em;
     white-space: nowrap;
     display: block;
