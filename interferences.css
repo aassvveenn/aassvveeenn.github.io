@@ -243,17 +243,19 @@ figcaption {
 
 @media (max-width: 600px) {
   body { 
-    padding: 2rem 1.25rem;
+    padding: 2rem 1.25rem; /* Marges totales = 2.5rem */
     max-width: 100%;
   }
 
   header h1 {
-    /* 11vw signifie : "Prends 11% de la largeur de l'écran" */
-    /* C'est une valeur qui s'ajustera instantanément si tu pivotes */
-    font-size: 7.5vw; 
-    letter-spacing: -0.04em;
+    /* LA LOGIQUE : 
+       (Largeur Écran - Marges) * Ton Ratio / 100 
+       On ajoute un clamp pour le confort et le mode paysage.
+    */
+    font-size: clamp(2rem, calc((100vw - 2.5rem) * 0.113), 4.5rem);
+    
     white-space: nowrap;
-    display: block;
+    line-height: 1;
   }
 
   .entry-title {
